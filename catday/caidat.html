@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>May cat da - Cai dat thong so</title>
+<style>
+    .div_caidat{
+        height: 100%;
+        text-align: center;
+        background-color:slategray ;
+        font-size: 30px ;
+    }
+
+    .divider{
+        width:5px;
+        height:auto;
+        display:inline-block;
+    }
+    input{
+        font-size: larger;
+    }
+</style>
+
+    <script src="jquerymin.js"></script>
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            //hoi chieu dai va so luong
+            var data_hoi = '{"cmd":"hoi","para":["step_mm","speed"]}';
+            
+            //khoi tao
+            var xhttp = new XMLHttpRequest() || ActiveXObject;
+            //cai dat bat su kien
+            xhttp.onreadystatechange=function(){
+                //kiem tra neu thanh cong
+                if(this.readyState==4 && this.status==200){
+                    var obj=JSON.parse(this.responseText);
+                    $("#buocmm").val(obj["para"][0]);
+                    $("#vongphut").val(obj["para"][1]);
+                }
+            };
+            //cau hinh request
+            xhttp.open('POST', 'http://' + window.location.hostname + '/lenh', true);
+            xhttp.setRequestHeader('Content-type', 'application/json');
+            //gui request
+            xhttp.send(data_hoi);
+
+
+                //dk tk
+            $("#caidat").click(function(){
+
+                var buocmm = $("#buocmm").val();
+                var vongphut = $("#vongphut").val();
+                if (buocmm<0){
+                    alert("buoc mm phai > 0");
+                    return;
+                }
+                if (vongphut < 1){
+                    alert("vong phut phai > 0");
+                    return;
+                }
+                var data_cat = '{"cmd":"caidat","para":[' + buocmm + ',' + vongphut + ']}';
+                //khoi tao
+                var xhttp = new XMLHttpRequest() || ActiveXObject;
+                $("#ketqua").text("Ket qua");
+                //cai dat bat su kien
+                xhttp.onreadystatechange=function(){
+                    //kiem tra neu thanh cong
+                    
+                    if(this.readyState==4 && this.status==200){
+                        console.log(this.responseText);
+                        var obj=JSON.parse(this.responseText);
+                        $("#ketqua").text(obj["para"][0]);
+                    }
+                };
+                //cau hinh request
+                xhttp.open('POST', 'http://' + window.location.hostname + '/lenh', true);
+                xhttp.setRequestHeader('Content-type', 'application/json');
+                //gui request
+                xhttp.send(data_cat);   
+            });
+
+        });
+    </script>
+
+</head>
+<body>
+
+    <div class="div_caidat">
+        <h4>Cai dat thong so</h4>
+        <label >Buoc/mm:</label>
+        <input type="number" id="buocmm"><br><br>
+        <label >Vong/phut:</label>
+        <input type="number" id="vongphut"><br><br>
+        <input type="button" value="Cai dat" id="caidat" style="background-color: seagreen; font-size: larger;">
+        <br>
+        <span style="color:blue" id="ketqua">Ket qua</span>
+
+    </div>
+
+
+</body>
+</html>
