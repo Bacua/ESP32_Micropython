@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Con cua con</title>
+        <script src="jquery.js"></script>
+        <script src="socket.io/socket.io.js"></script>
+        <script>
+            //gọi điện lên server
+            var socket = io("https://bacua-socket-nodejs.herokuapp.com/");
+            //nhan ket qua dang ky
+            socket.on("dktk_tt", function(data){
+                console.log(data);
+                if (data == "ok"){
+                    $("#txtdk").val("");
+                }
+                else{
+                    $("#txtdk").val(data);
+                }
+            });    
+            //nhan chat
+            socket.on("chat", function(data){
+                console.log(data);
+                var _nd = $("#pchat").html();
+                if (_nd == ""){
+                    _nd = data;
+                }
+                else{
+                    _nd = _nd + "<br>" + data;
+                }
+                $("#pchat").html(_nd);
+            }); 
+
+
+            $(document).ready(function(){
+                //dk tk
+                $("#btndk").click(function(){
+                    var tendk = $("#txtdk").val();
+                    socket.emit('dktk',tendk);
+                        
+                });
+
+                //gui chat
+                $("#btnchat").click(function(){
+                    var toname = $("#txtto").val();
+                    var _msg = $("#txtchat").val();
+                    socket.emit('chat',{name:toname,msg:_msg});
+                    $("#txtchat").val("");  
+                });
+            });
+        </script>
+    </head>
+    <body>
+        <h1>socket io</h1>
+        <input type="text" id="txtdk">
+        <button id="btndk">Dang ky</button>
+        <br>
+        <br>
+        Gửi cho ai:
+        <input type="text" id="txtto">
+        Gửi cái gì:
+        <input type="text" id="txtchat">
+        <button id="btnchat">Gui</button>
+        <p id="pchat"></p>
+    </body>
+</html>
