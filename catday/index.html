@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>May cat day</title>
+    <style>
+        .container_swap{
+            width: 100%;
+            background-color: greenyellow;
+            font-size: 30px ;
+        }
+        .div_left{
+            width: 100%;
+            height: 100%;
+            float: left;
+            text-align: center;
+        }
+        .div_lenhcat{
+            text-align: center;
+            background-color:olivedrab;
+        }
+        .divider{
+            width:5px;
+            height:auto;
+            display:inline-block;
+        }
+    </style>
+    <script src="jquerymin.js"></script>
+    <script type="text/javascript">
+
+		
+        function guilenh(lenh){
+            //khoi tao
+            var xhttp = new XMLHttpRequest() || ActiveXObject;
+
+            //cai dat bat su kien
+            xhttp.onreadystatechange=function(){
+                //kiem tra neu thanh cong
+                
+                if(this.readyState==4 && this.status==200){
+                    //alert(this.responseText);
+                }
+            };
+            //cau hinh request
+            xhttp.open('POST', 'http://' + window.location.hostname + '/lenh', true);
+            xhttp.setRequestHeader('Content-type', 'application/json');
+            //gui request
+            xhttp.send(lenh);
+        }
+
+
+
+        $(document).ready(function(){
+            //hoi chieu dai va so luong
+            var data_hoi = '{"cmd":"hoi","para":["soluong","chieudai","dacat","trangthai"]}';
+            
+            //khoi tao
+            var xhttp = new XMLHttpRequest() || ActiveXObject;
+            //cai dat bat su kien
+            xhttp.onreadystatechange=function(){
+                //kiem tra neu thanh cong
+                if(this.readyState==4 && this.status==200){
+                    var obj=JSON.parse(this.responseText);
+                    $("#soluong").val(obj["para"][0]);
+                    $("#chieudai").val(obj["para"][1]);
+                    var hoanthanh=obj["para"][2]+"/"+obj["para"][0];
+                    //console(hoanthanh);
+                    $("#hoanthanh").text(hoanthanh);
+                    $("#ketqua").text(obj["para"][3]);
+                }
+            };
+            //cau hinh request
+            xhttp.open('POST', 'http://' + window.location.hostname + '/lenh', true);
+            xhttp.setRequestHeader('Content-type', 'application/json');
+            //gui request
+            xhttp.send(data_hoi);
+
+
+                //dk tk
+            $("#cat").click(function(){
+
+                var soluong = parseInt($("#soluong").val());
+                var chieudai = parseInt($("#chieudai").val());
+                var data_cat = '{"cmd":"cat","para":[' + soluong + ',' + chieudai + ']}';
+                if (soluong<1){
+                    alert("so luong phai > 0");
+                    return;
+                }
+                if (chieudai<1){
+                    alert("chieu dai phai > 0");
+                    return;
+                }
+                //alert("so luong" + soluong);
+                //alert("chieu dai "+ chieudai);
+                //khoi tao
+                var xhttp = new XMLHttpRequest() || ActiveXObject;
+
+                //cai dat bat su kien
+                xhttp.onreadystatechange=function(){
+                    //kiem tra neu thanh cong
+                    
+                    if(this.readyState==4 && this.status==200){
+                        console.log(this.responseText);
+                        var obj=JSON.parse(this.responseText);
+                        $("#ketqua").text(obj["para"][0]);
+                    }
+                };
+                //cau hinh request
+                xhttp.open('POST', 'http://' + window.location.hostname + '/lenh', true);
+                xhttp.setRequestHeader('Content-type', 'application/json');
+                //gui request
+                xhttp.send(data_cat);   
+            });
+
+            $("#dung").click(function(){
+                var data_dung = '{"cmd":"dung","para":["dung"]}';
+                //khoi tao
+                var xhttp = new XMLHttpRequest() || ActiveXObject;
+
+                //cai dat bat su kien
+                xhttp.onreadystatechange=function(){
+                    //kiem tra neu thanh cong
+                    
+                    if(this.readyState==4 && this.status==200){
+                        console.log(this.responseText);
+                        var obj=JSON.parse(this.responseText);
+                        $("#ketqua").text(obj["para"][0]);
+                    }
+                };
+                //cau hinh request
+                xhttp.open('POST', 'http://' + window.location.hostname + '/lenh', true);
+                xhttp.setRequestHeader('Content-type', 'application/json');
+                //gui request
+                xhttp.send(data_dung);   
+            });
+
+        });
+        //document.getElementById("hoanthanh").value = "1/10";
+        /*
+        if(typeof(EventSource) !== 'undefined') {
+            const source = new EventSource('http://' + window.location.hostname + '/hoilenh');
+            source.onmessage = function(e) {
+                console.log(e.data);
+                var obj=JSON.parse(e.data);
+                document.getElementById("hoanthanh").innerHTML = obj["tiendo"];
+                document.getElementById("ketqua").innerHTML = obj["trangthai"];
+            };
+        } else {
+            document.getElementById("ketqua").innerHTML = "Sorry, your browser does not support server-sent events...";
+        }
+        */
+    </script>
+</head>
+<body>
+    <div class="container_swap">
+        <div class="div_left" >
+            <div class="div_lenhcat">
+                <h2>Lenh cat </h2>
+                <label >So luong:</label>
+                <input type="number" id="soluong" style="font-size: larger;" min="1" step="1"><br><br>
+                <label >Chieu dai:</label>
+                <input type="number" id="chieudai" style="font-size: larger;" min="1" step="1">(mm)<br><br>
+
+                <input type="button" value="Cat" id="cat" style="background-color: seagreen; font-size: larger;">
+                <div class="divider"></div>
+                <input type="button" value="Dung" id="dung" style="background-color: brown ; font-size: larger;">
+                <br><br>
+                <label >Hoan thanh:</label>
+                <div class="divider"></div>
+                <span id = "hoanthanh" style="color:black; font-size: larger;background-color: orangered;"  >0/0</span>
+                <br>
+                <span style="color:blue" id="ketqua"></span>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
